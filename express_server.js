@@ -11,6 +11,9 @@ const urlDatabase = {
 app.get("/", (req, resp) => {
   resp.send("Hello!, Is there anybody out there?");
 });
+app.get("/urls.json", (req, resp) => {
+  resp.json(urlDatabase);
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
