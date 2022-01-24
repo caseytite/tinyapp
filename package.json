@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/caseytite/tinyapp/issues"
   },
-  "homepage": "https://github.com/caseytite/tinyapp#readme"
+  "homepage": "https://github.com/caseytite/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  }
 }
