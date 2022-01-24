@@ -19,6 +19,10 @@ app.get("/urls.json", (req, resp) => {
 app.get("/hello", (req, resp) => {
   resp.send("<html><body>Is there anybody <b>Out there?</b></body></html>\n");
 });
+app.get("/urls", (req, resp) => {
+  const templateVars = { urls: urlDatabase };
+  resp.render("urls_index", templateVars);
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
