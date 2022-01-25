@@ -55,6 +55,9 @@ app.get("/urls/:shortURL", (req, resp) => {
   };
   resp.render("urls_show", templateVars);
 });
+app.get("*", (req, resp) => {
+  resp.redirect("https://httpstatusdogs.com/404-not-found");
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
