@@ -51,7 +51,7 @@ app.get("/u/:shortURL", (req, resp) => {
 app.get("/urls/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
-
+  console.log("app.get");
   const templateVars = {
     shortURL,
     longURL,
@@ -63,6 +63,17 @@ app.post("/urls/:shortURL/delete", (req, resp) => {
   const shortURL = req.params.shortURL;
   //delete short url
   delete urlDatabase[shortURL];
+  resp.redirect("/urls");
+});
+//longurl becomes the key,short url the new value
+app.post("/urls/:shortURL", (req, resp) => {
+  //short url is still the same
+  const shortURL = req.params.shortURL;
+  //we search for the key and assign to the new value
+  // of longURL which comes from the input name === key
+  //the input value will be the "text content"
+  urlDatabase[shortURL] = req.body.longURL;
+
   resp.redirect("/urls");
 });
 
