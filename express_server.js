@@ -31,14 +31,18 @@ app.get("/urls/new", (req, resp) => {
   resp.render("urls_new");
 });
 app.post("/urls", (req, resp) => {
-  console.log(req.body);
-  resp.send("Ok");
+  let shortURL = generateRandomString();
+  let longURL = req.body.longURL;
+  urlDatabase[shortURL] = longURL;
+  //make sure this does not have the colon or it wont work
+  resp.redirect(`/urls/${shortURL}`);
+  console.log(urlDatabase);
 });
 
 app.get("/urls/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[`${shortURL}`];
-  console.log(longURL);
+
   const templateVars = {
     shortURL,
     longURL,
