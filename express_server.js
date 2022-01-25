@@ -52,9 +52,9 @@ app.listen(PORT, () => {
 
 function generateRandomString() {
   let output = "";
-  let randoms = [1, 2, 3, 4, 5, 6, 7, 8, 9, "a", "b", "c", "d", "e", "f"];
+  let randoms = "123456789abcdefghi";
   for (let i = 0; i < 6; i++) {
-    output += randoms[Math.floor(Math.random() * 15)];
+    output += randoms[Math.floor(Math.random() * 18)];
   }
   // console.log(output);
   return output;
