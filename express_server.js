@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
+const { redirect } = require("statuses");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -22,14 +23,16 @@ app.get("/urls.json", (req, resp) => {
 app.get("/hello", (req, resp) => {
   resp.send("<html><body>Is there anybody <b>Out there?</b></body></html>\n");
 });
+// my URLs page
 app.get("/urls", (req, resp) => {
   const templateVars = { urls: urlDatabase };
   resp.render("urls_index", templateVars);
 });
-
+// new page
 app.get("/urls/new", (req, resp) => {
   resp.render("urls_new");
 });
+// adds new link
 app.post("/urls", (req, resp) => {
   const shortURL = generateRandomString();
   const longURL = req.body.longURL;
@@ -38,13 +41,13 @@ app.post("/urls", (req, resp) => {
   resp.redirect(`/urls/${shortURL}`);
   console.log(urlDatabase);
 });
-
+// redirect when clicking on short url
 app.get("/u/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
   resp.redirect(longURL);
 });
-
+// go to tiny url page
 app.get("/urls/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
@@ -55,6 +58,17 @@ app.get("/urls/:shortURL", (req, resp) => {
   };
   resp.render("urls_show", templateVars);
 });
+app.post("/urls/:shortURL/delete", (req, resp) => {
+  //pull short url from params
+  const shortURL = req.params.shortURL;
+  //delete short url
+  delete urlDatabase[shortURL];
+  resp.redirect("/urls");
+});
+
+//
+
+// wild card 404 error
 app.get("*", (req, resp) => {
   resp.redirect("https://httpstatusdogs.com/404-not-found");
 });
