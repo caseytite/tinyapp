@@ -31,8 +31,8 @@ app.get("/urls/new", (req, resp) => {
   resp.render("urls_new");
 });
 app.post("/urls", (req, resp) => {
-  let shortURL = generateRandomString();
-  let longURL = req.body.longURL;
+  const shortURL = generateRandomString();
+  const longURL = req.body.longURL;
   urlDatabase[shortURL] = longURL;
   //make sure this does not have the colon or it wont work
   resp.redirect(`/urls/${shortURL}`);
@@ -47,7 +47,7 @@ app.get("/u/:shortURL", (req, resp) => {
 
 app.get("/urls/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[`${shortURL}`];
+  const longURL = urlDatabase[shortURL];
 
   const templateVars = {
     shortURL,
