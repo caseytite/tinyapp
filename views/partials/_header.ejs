@@ -1,6 +1,6 @@
 <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-primary">
-    <a class="navbar-brand" href="/urls"> TinyApp </a>
+    <a class="navbar-brand" href="/"> TinyApp </a>
     <button
       class="navbar-toggler"
       type="button"
@@ -21,19 +21,20 @@
 
     <div>
       <% if(!username){ %>
-      <form action="/login" method="POST" class="">
-        <span class="text-light"
-          >This is your Captain speaking Enter to win a free cruise today!
-        </span>
+      <form action="/login" method="POST" class="form-label">
+        <span class="text-light">Login </span>
         <input
-          class=""
+          class="rounded-pill"
           type="text"
-          placeholder="username"
+          placeholder=" username"
           name="username"
           value=""
         />
         <button type="submit" class="btn btn-dark">Sign in</button>
       </form>
+      <!--  -->
+
+      <!--  -->
       <% } else { %>
 
       <form action="/logout" method="POST" class="">
