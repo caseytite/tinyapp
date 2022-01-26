@@ -15,7 +15,12 @@ const urlDatabase = {
 };
 
 app.get("/", (req, resp) => {
-  resp.send("Hello!, Is there anybody out there?");
+  // resp.send("Hello!, Is there anybody out there?");
+  const templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"],
+  };
+  resp.render("home_page", templateVars);
 });
 app.get("/urls.json", (req, resp) => {
   resp.json(urlDatabase);
@@ -97,7 +102,7 @@ app.post("/logout", (req, resp) => {
   //
   const username = req.body.username;
   resp.clearCookie("username", username);
-  resp.redirect("/urls");
+  resp.redirect("/");
 });
 
 //
@@ -120,3 +125,5 @@ function generateRandomString() {
   // console.log(output);
   return output;
 }
+
+// app.use(express.static('path_to_images)
