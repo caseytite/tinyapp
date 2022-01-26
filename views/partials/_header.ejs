@@ -23,6 +23,7 @@
       <% if(!username){ %>
       <form action="/login" method="POST" class="form-inline">
         <h5 class="text-light mt-1">Login</h5>
+        <a href="/register">Register</a>
         <input
           class="form-control ml-2"
           type="text"
@@ -36,8 +37,10 @@
       <% } else { %>
 
       <form action="/logout" method="POST" class="form-inline">
+        <h5 class="text-light mt-1">
+          Logged in as: <%=users[username].email%>
+        </h5>
         <span class="text-light"></span>
-        <h5 class="text-light mt-1">Logged in as: <%=username%></h5>
         <button type="submit" name="username" class="btn btn-dark ml-2">
           Logout
         </button>
