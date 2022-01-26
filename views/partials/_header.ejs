@@ -21,16 +21,16 @@
 
     <div>
       <% if(!username){ %>
-      <form action="/login" method="POST" class="form-label">
+      <form action="/login" method="POST" class="form-inline">
         <span class="text-light">Login </span>
         <input
-          class="rounded-pill"
+          class="form-control ml-2"
           type="text"
-          placeholder=" username"
+          placeholder="username"
           name="username"
           value=""
         />
-        <button type="submit" class="btn btn-dark">Sign in</button>
+        <button type="submit" class="btn btn-dark ml-2">Sign in</button>
       </form>
       <!--  -->
 
@@ -39,7 +39,7 @@
 
       <form action="/logout" method="POST" class="">
         <span class="text-light">Logged in as: <%=username%></span>
-        <button type="submit" name="username" class="btn btn-dark">
+        <button type="submit" name="username" class="btn btn-dark ml-2">
           Logout
         </button>
       </form>
