@@ -13,14 +13,24 @@
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
       crossorigin="anonymous"
     />
+    <link href="../app.css" rel="stylesheet" type="text/css" />
     <title>TinyApp</title>
   </head>
   <body>
     <header><%- include('partials/_header');%></header>
     <main style="margin: 1em">
-      <h3>Welcome to TinyApp</h3>
+      <div class="text-center"><h1>Welcome to TinyApp!</h1></div>
     </main>
-    <div><h5>The best place to make your urls urly-small!</h5></div>
+    <div class="text-center">
+      <h5>The best place to make your urls urly-small!</h5>
+    </div>
+    <div class="text-center">
+      <img
+        class="rounded float-start"
+        src="https://i.imgflip.com/45amwu.png"
+        alt="small"
+      />
+    </div>
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
