@@ -1,11 +1,11 @@
-// const { response } = require("express");
 const express = require("express");
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
-const { redirect } = require("statuses");
+const cookieParser = require("cookie-parser");
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
@@ -25,12 +25,19 @@ app.get("/hello", (req, resp) => {
 });
 // my URLs page
 app.get("/urls", (req, resp) => {
-  const templateVars = { urls: urlDatabase };
+  const templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"],
+  };
   resp.render("urls_index", templateVars);
 });
 // new page
 app.get("/urls/new", (req, resp) => {
-  resp.render("urls_new");
+  const templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"],
+  };
+  resp.render("urls_new", templateVars);
 });
 // adds new link
 app.post("/urls", (req, resp) => {
@@ -39,7 +46,7 @@ app.post("/urls", (req, resp) => {
   urlDatabase[shortURL] = longURL;
   //make sure this does not have the colon or it wont work
   resp.redirect(`/urls/${shortURL}`);
-  console.log(urlDatabase);
+  // console.log(urlDatabase);
 });
 // redirect when clicking on short url
 app.get("/u/:shortURL", (req, resp) => {
@@ -55,6 +62,7 @@ app.get("/urls/:shortURL", (req, resp) => {
   const templateVars = {
     shortURL,
     longURL,
+    username: req.cookies["username"],
   };
   resp.render("urls_show", templateVars);
 });
@@ -65,7 +73,7 @@ app.post("/urls/:shortURL/delete", (req, resp) => {
   delete urlDatabase[shortURL];
   resp.redirect("/urls");
 });
-//longurl becomes the key,short url the new value
+//longurl becomes the key because we assigned the input name to longurl ,short url the new value from resp body
 app.post("/urls/:shortURL", (req, resp) => {
   //short url is still the same
   const shortURL = req.params.shortURL;
@@ -74,6 +82,21 @@ app.post("/urls/:shortURL", (req, resp) => {
   //the input value will be the "text content"
   urlDatabase[shortURL] = req.body.longURL;
 
+  resp.redirect("/urls");
+});
+app.post("/login", (req, resp) => {
+  const username = req.body.username;
+
+  resp.cookie("username", username);
+  console.log(req.body.username);
+
+  resp.redirect("/urls");
+});
+
+app.post("/logout", (req, resp) => {
+  //
+  const username = req.body.username;
+  resp.clearCookie("username", username);
   resp.redirect("/urls");
 });
 

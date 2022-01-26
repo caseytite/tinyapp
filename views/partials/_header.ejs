@@ -18,6 +18,32 @@
         <a class="nav-item nav-link" href="/urls/new"> Create New URL </a>
       </div>
     </div>
+
+    <div>
+      <% if(!username){ %>
+      <form action="/login" method="POST" class="">
+        <span class="text-light"
+          >This is your Captain speaking Enter to win a free cruise today!
+        </span>
+        <input
+          class=""
+          type="text"
+          placeholder="username"
+          name="username"
+          value=""
+        />
+        <button type="submit" class="btn btn-dark">Sign in</button>
+      </form>
+      <% } else { %>
+
+      <form action="/logout" method="POST" class="">
+        <span class="text-light">Logged in as: <%=username%></span>
+        <button type="submit" name="username" class="btn btn-dark">
+          Logout
+        </button>
+      </form>
+      <%}%>
+    </div>
   </nav>
 </header>
 ;
