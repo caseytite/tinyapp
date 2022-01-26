@@ -4,47 +4,76 @@ const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
+// middleware------
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 app.set("view engine", "ejs");
+
+//---------------
+
+// Data----------
 
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xk": "http://www.google.com",
 };
+const users = {
+  1: { id: 1, email: "cjt@123.com", password: 123 },
+  2: { id: 2, email: "ojt@123.com", password: 123 },
+};
 
+//---------------
+
+//
+// Home page
+//
 app.get("/", (req, resp) => {
   // resp.send("Hello!, Is there anybody out there?");
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"],
+    username: req.cookies.user_id,
+    users: users,
   };
   resp.render("home_page", templateVars);
 });
+//
+// Test codes
+//
 app.get("/urls.json", (req, resp) => {
   resp.json(urlDatabase);
 });
 app.get("/hello", (req, resp) => {
   resp.send("<html><body>Is there anybody <b>Out there?</b></body></html>\n");
 });
+
+//
 // my URLs page
+//
 app.get("/urls", (req, resp) => {
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"],
+    username: req.cookies.user_id,
+    users: users,
   };
+  console.log("in app.get urls", req.cookies.user_id);
   resp.render("urls_index", templateVars);
 });
-// new page
+
+//
+// Page for new URL
+//
 app.get("/urls/new", (req, resp) => {
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"],
+    username: req.cookies.user_id,
+    users: users,
   };
   resp.render("urls_new", templateVars);
 });
-// adds new link
+//
+//  Post to add new link
+//
 app.post("/urls", (req, resp) => {
   const shortURL = generateRandomString();
   const longURL = req.body.longURL;
@@ -54,13 +83,17 @@ app.post("/urls", (req, resp) => {
   resp.redirect(`/urls/${shortURL}`);
   // console.log(urlDatabase);
 });
+//
 // redirect when clicking on short url
+//
 app.get("/u/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
   resp.redirect(longURL);
 });
+//
 // go to tiny url page
+//
 app.get("/urls/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
@@ -69,10 +102,14 @@ app.get("/urls/:shortURL", (req, resp) => {
   const templateVars = {
     shortURL,
     longURL,
-    username: req.cookies["username"],
+    username: req.cookies.user_id,
+    users: users,
   };
   resp.render("urls_show", templateVars);
 });
+//
+// Deletes a URL
+//
 app.post("/urls/:shortURL/delete", (req, resp) => {
   //pull short url from params
   const shortURL = req.params.shortURL;
@@ -91,29 +128,84 @@ app.post("/urls/:shortURL", (req, resp) => {
 
   resp.redirect("/urls");
 });
+//
+// Logs in
+//
 app.post("/login", (req, resp) => {
-  const username = req.body.username;
+  const username = req.body.user_id;
 
-  resp.cookie("username", username);
+  resp.cookie("user_id", username);
   console.log("req.body.username", username);
 
   resp.redirect("/urls");
 });
 
+//
+// Logs out
+//
 app.post("/logout", (req, resp) => {
   //
-  const username = req.body.username;
-  resp.clearCookie("username", username);
+  const username = req.body.user_id;
+  resp.clearCookie("user_id", username);
   resp.redirect("/");
+  // resp.redirect("/urls");
 });
 
 //
+// Register
+//
+app.get("/register", (req, resp) => {
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[shortURL];
+  const templateVars = {
+    shortURL,
+    longURL,
+    username: req.cookies.user_id,
+    users: users,
+  };
+  console.log("in reg get", req.cookies.user_id);
+  // const username = req.body.username;
 
+  // resp.cookie("username", username);
+  // console.log("req.body.username regi", username);
+  resp.render("register_page", templateVars);
+});
+
+//
+// Register Form submit
+//
+app.post("/register", (req, resp) => {
+  //
+  const newUID = generateRandomString();
+  const newEmail = req.body.email;
+  const newPassword = req.body.password;
+  if (newEmail === "" || newPassword === "") {
+    resp.statusCode = 400;
+    resp.end();
+  } else if (!checkUID(newEmail)) {
+    //
+    resp.statusCode = 400;
+    resp.end();
+    console.log("user exists");
+  } else {
+    users[newUID] = { id: newUID, email: newEmail, password: newPassword };
+
+    resp.cookie("user_id", newUID);
+
+    console.log(users);
+    resp.redirect("/urls");
+  }
+});
+//
 // wild card 404 error
+//
 app.get("*", (req, resp) => {
   resp.redirect("https://httpstatusdogs.com/img/404.jpg");
 });
 
+//
+// Server listening
+//
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
@@ -126,6 +218,20 @@ function generateRandomString() {
   }
   // console.log(output);
   return output;
+}
+
+function checkUID(newEmail) {
+  for (let user in users) {
+    if (newEmail === users[user].email) {
+      console.log("user email", user.email);
+
+      return false;
+    } else {
+      // resp.redirect("/register");
+      console.log("good to go");
+    }
+  }
+  return true;
 }
 
 // app.use(express.static('path_to_images)
