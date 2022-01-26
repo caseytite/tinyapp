@@ -50,6 +50,7 @@ app.post("/urls", (req, resp) => {
   const longURL = req.body.longURL;
   urlDatabase[shortURL] = longURL;
   //make sure this does not have the colon or it wont work
+  console.log("we came through here");
   resp.redirect(`/urls/${shortURL}`);
   // console.log(urlDatabase);
 });
@@ -63,7 +64,8 @@ app.get("/u/:shortURL", (req, resp) => {
 app.get("/urls/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
-  console.log("app.get");
+  console.log("shortURL", shortURL);
+  console.log("longURL", longURL);
   const templateVars = {
     shortURL,
     longURL,
@@ -93,7 +95,7 @@ app.post("/login", (req, resp) => {
   const username = req.body.username;
 
   resp.cookie("username", username);
-  console.log(req.body.username);
+  console.log("req.body.username", username);
 
   resp.redirect("/urls");
 });
@@ -109,7 +111,7 @@ app.post("/logout", (req, resp) => {
 
 // wild card 404 error
 app.get("*", (req, resp) => {
-  resp.redirect("https://httpstatusdogs.com/404-not-found");
+  resp.redirect("https://httpstatusdogs.com/img/404.jpg");
 });
 
 app.listen(PORT, () => {
