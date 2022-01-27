@@ -19,40 +19,36 @@
   <body>
     <header><%- include('partials/_header');%></header>
     <main style="margin: 1em">
-      <div class="text-center"><h1>Welcome to TinyApp!</h1></div>
+      <div class=""><h1>Welcome to TinyApp!</h1></div>
     </main>
-    <div class="text-center">
+    <div class="ml-3">
       <h5>Please Login</h5>
     </div>
-    <!--  
-    <form action="">
-      <div class="mb-2 row justify-content-sm-start">
-        <label for="inputEmail" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-2">
-          Enter an Email
-          <input type="text" class="form-control" id="inputEmail" />
-        </div>
-      </div>
-      <div class="mb-2 row justify-content-sm-start">
-        <label for="inputPassword" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-2">
-          Enter a Password
-          <input type="password" class="form-control" id="inputPassword" />
-        </div>
-      </div>
+     
+   <form action="/login" name="login" method="POST" class="col-2">
       <div class="">
-        <div class="mb-2 row justify-content-sm-start">
-          <button type="submit" class="btn btn-dark">Sign in</button>
-        </div>
+        Enter your Email:
+        <input
+          class="row-4 form-control"
+          name="email"
+          placeholder="Email@123.com"
+          type="email"
+        />
       </div>
-    </form>
-  -->
-
-    <form action="/login" name="login" method="POST" class="text-center">
-      <input class="" name="email" placeholder="Email@123.com" type="email" />
-      <input class="" name="password" placeholder="Password" type="password" />
-      <input class="btn-dark rounded" value="Login" type="submit" />
-    </form>
+      <div>
+        Enter your Password:
+        <input
+          class="row-4 form-control"
+          name="password"
+          placeholder="Password"
+          type="password"
+        />
+      </div>
+      <div>
+        <button type="submit" class="btn btn-dark mt-2">
+          <a class="text-light">Login</a>
+        </button>
+ 
 
     <!-- Bootstrap JS -->
     <script

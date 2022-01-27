@@ -19,10 +19,10 @@
   <body>
     <header><%- include('partials/_header');%></header>
     <main style="margin: 1em">
-      <div class="text-center"><h1>Welcome to TinyApp!</h1></div>
+      <div class=""><h1>Welcome to TinyApp!</h1></div>
     </main>
-    <div class="text-center">
-      <h5>Register now!</h5>
+    <div class="ml-3">
+      <h5>Create User:</h5>
     </div>
     <!--  
     <form action="">
@@ -48,16 +48,30 @@
     </form>
   -->
 
-    <form action="/register" name="register" method="POST" class="text-center">
+    <form action="/register" name="register" method="POST" class="col-2">
       <div class="">
-        <input class="" name="email" placeholder="Email@123.com" type="email" />
+        Enter a Email:
         <input
-          class=""
+          class="row-4 form-control"
+          name="email"
+          placeholder="Email@123.com"
+          type="email"
+        />
+      </div>
+      <div>
+        Enter a Password:
+        <input
+          class="row-4 form-control"
           name="password"
           placeholder="Password"
           type="password"
         />
-        <input class="btn-dark rounded" value="Register" type="submit" />
+      </div>
+      <div>
+        <button type="submit" class="btn btn-dark mt-2">
+          <a class="text-light">Register</a>
+        </button>
+        <!-- <input class="btn-dark rounded" value="Register" type="submit" /> -->
       </div>
     </form>
 

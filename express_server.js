@@ -3,7 +3,6 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const res = require("express/lib/response");
 
 // middleware------
 
@@ -36,11 +35,19 @@ const users = {
 // Home page
 //
 app.get("/", (req, resp) => {
-  const templateVars = {
-    urls: urlDatabase,
-    user: users[req.cookies.user_id],
-  };
-  resp.render("home_page", templateVars);
+  const loggedIn = req.cookies.user_id;
+  if (loggedIn) {
+    const templateVars = {
+      urls: urlDatabase,
+      user: users[req.cookies.user_id],
+    };
+    resp.render("home_page", templateVars);
+  } else {
+    const templateVars = {
+      user: null,
+    };
+    resp.render("home_page", templateVars);
+  }
 });
 //
 // Test codes
@@ -82,7 +89,7 @@ app.get("/urls", (req, resp) => {
 // Page for new URL
 //
 app.get("/urls/new", (req, resp) => {
-  console.log(req.cookies.user_id);
+  // console.log(req.cookies.user_id);
   const loggedIn = req.cookies.user_id;
   if (loggedIn) {
     const templateVars = {
@@ -163,19 +170,20 @@ app.post("/login", (req, resp) => {
   const email = req.body.email;
   console.log("email", email);
   const password = req.body.password;
-  console.log(password);
+  // console.log(password);
 
   const user = validateUser(email, password);
   console.log("before if", user);
   if (user) {
     resp.cookie("user_id", user.id);
-    console.log("if");
+    // console.log("if");
     resp.redirect("/urls");
   } else {
-    console.log("else");
+    // console.log("else");
     // resp.status(403);
-    resp.send(401).status("Unable to find the associated user credentials.");
-    next();
+    // resp.send(401).status("Unable to find the associated user credentials.");
+    // next();
+    resp.redirect("https://httpstatusdogs.com/img/404.jpg");
   }
 });
 
@@ -188,8 +196,8 @@ app.post("/logout", (req, resp) => {
   //
   const user_id = req.body.user_id;
   resp.clearCookie("user_id", user_id);
-  resp.redirect("/");
-  // resp.redirect("/urls");
+  // resp.redirect("/");
+  resp.redirect("/urls");
 });
 
 //
@@ -218,13 +226,9 @@ app.post("/register", (req, resp) => {
     //
     resp.statusCode = 400;
     resp.end();
-    console.log("user exists");
+    // console.log("user exists");
   } else {
     users[newUID] = { id: newUID, email: newEmail, password: newPassword };
-    // console.log(users);
-    console.log(users);
-    console.log("user registerd");
-    // console.log(users);
 
     resp.cookie("user_id", newUID);
 
@@ -280,4 +284,3 @@ const validateUser = function (email, password) {
   }
   return false;
 };
-// // app.use(express.static('path_to_images)
