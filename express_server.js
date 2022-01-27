@@ -60,17 +60,12 @@ app.get("/urls", (req, resp) => {
 
   if (loggedIn) {
     const userUrls = {};
-    // loop each url
     for (let urlId in urlDatabase) {
       const url = urlDatabase[urlId];
-      // check if id matches current id
-      // console.log("url", url);
       if (url["userID"] === loggedIn) {
-        //display matching urls
         userUrls[urlId] = url.longURL;
       }
     }
-    // console.log(userUrls);
 
     const templateVars = {
       urls: userUrls,
@@ -110,7 +105,6 @@ app.post("/urls", (req, resp) => {
 
   urlDatabase[shortURL] = { longURL: longURL, userID: userID };
   console.log(req.cookies.user_id);
-  // urlDatabase[shortURL] = longURL;
 
   resp.redirect(`/urls/${shortURL}`);
 });
@@ -119,7 +113,7 @@ app.post("/urls", (req, resp) => {
 //
 app.get("/u/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL];
+  const longURL = urlDatabase[shortURL].longURL;
 
   resp.redirect(longURL);
 });
@@ -128,7 +122,6 @@ app.get("/u/:shortURL", (req, resp) => {
 //
 app.get("/urls/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
-  // const longURL = urlDatabase[shortURL]; DN
   const templateVars = {
     shortURL,
     longURL: urlDatabase[shortURL].longURL,
