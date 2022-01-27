@@ -3,6 +3,8 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const bcrypt = require("bcryptjs");
+
 const {
   generateRandomString,
   checkUser,
@@ -18,6 +20,10 @@ app.set("view engine", "ejs");
 
 //------------------------------------------------------------------------
 
+// const password123 = "isthereanybodyoutthere";
+// const hashed = bcrypt.hashSync(password123, 10);
+// console.log("hashed password = ", hashed);
+// console.log(bcrypt.compareSync("isthereanybodyoutthere", hashed));
 // Data-------------------------------------------------------------------
 
 const urlDatabase = {
@@ -31,8 +37,8 @@ const urlDatabase = {
   },
 };
 const users = {
-  1: { id: 1, email: "cjt@123.com", password: "123" },
-  2: { id: 1, email: "ojt@123.com", password: "123" },
+  1: { id: 1, email: "cjt@123.com", password: bcrypt.hashSync("123", 10) },
+  2: { id: 2, email: "ojt@123.com", password: bcrypt.hashSync("1234", 10) },
 };
 
 //------------------------------------------------------------------------
@@ -196,10 +202,13 @@ app.post("/urls/:shortURL", (req, resp) => {
 app.post("/login", (req, resp) => {
   const email = req.body.email;
   const password = req.body.password;
+  const hashed = bcrypt.hashSync(password, 10);
 
-  const user = validateUser(email, password, users);
+  bcrypt.compareSync(password, hashed);
+
+  const user = validateUser(email, hashed, password, users);
   if (user) {
-    resp.cookie("user_id", user.id);
+    resp.cookie("user_id", hashed); // not correct yet
     resp.redirect("/urls");
   } else {
     resp.redirect("https://httpstatusdogs.com/img/404.jpg");
@@ -233,7 +242,9 @@ app.post("/register", (req, resp) => {
     resp.redirect("https://httpstatusdogs.com/img/404.jpg");
     resp.end();
   } else {
-    users[newUID] = { id: newUID, email: newEmail, password: newPassword };
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+    console.log(hashedPassword);
+    users[newUID] = { id: newUID, email: newEmail, password: hashedPassword };
 
     resp.cookie("user_id", newUID);
 

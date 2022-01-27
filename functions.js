@@ -1,4 +1,4 @@
-// const { users } = require("./express_server");
+const bcrypt = require("bcryptjs");
 
 function generateRandomString() {
   let output = "";
@@ -18,10 +18,10 @@ function checkUser(newEmail, users) {
   return false;
 }
 
-const validateUser = function (email, password, users) {
+const validateUser = function (email, hashed, password, users) {
   //
   for (let user in users) {
-    if (users[user].email === email && users[user].password === password) {
+    if (users[user].email === email && bcrypt.compareSync(password, hashed)) {
       return users[user];
     }
   }
