@@ -3,7 +3,6 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-
 // middleware------
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -128,15 +127,20 @@ app.get("/u/:shortURL", (req, resp) => {
 // go to tiny url page
 //
 app.get("/urls/:shortURL", (req, resp) => {
-  const shortURL = req.params.shortURL;
-  const templateVars = {
-    shortURL,
-    longURL: urlDatabase[shortURL].longURL,
-    urls: urlDatabase,
-    user: users[req.cookies.user_id],
-    // users: users,----
-  };
-  resp.render("urls_show", templateVars);
+  const loggedIn = req.cookies.user_id;
+  if (loggedIn) {
+    const shortURL = req.params.shortURL;
+    const templateVars = {
+      shortURL,
+      longURL: urlDatabase[shortURL].longURL,
+      urls: urlDatabase,
+      user: users[req.cookies.user_id],
+      // users: users,----
+    };
+    resp.render("urls_show", templateVars);
+  } else {
+    resp.redirect("/login");
+  }
 });
 //
 // Deletes a URL
@@ -220,11 +224,13 @@ app.post("/register", (req, resp) => {
   const newEmail = req.body.email;
   const newPassword = req.body.password;
   if (newEmail === "" || newPassword === "") {
-    resp.statusCode = 400;
+    // resp.statusCode = 400;
+    resp.redirect("https://httpstatusdogs.com/img/404.jpg");
     resp.end();
   } else if (checkUser(newEmail)) {
     //
-    resp.statusCode = 400;
+    // resp.statusCode = 400;
+    resp.redirect("https://httpstatusdogs.com/img/404.jpg");
     resp.end();
     // console.log("user exists");
   } else {
@@ -250,20 +256,12 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
 
-function generateRandomString() {
-  let output = "";
-  let randoms = "123456789abcdefghi";
-  for (let i = 0; i < 6; i++) {
-    output += randoms[Math.floor(Math.random() * 18)];
-  }
-
-  return output;
-}
+const { generateRandomString } = require("./functions");
 
 function checkUser(newEmail) {
   for (let user in users) {
     if (newEmail == users[user].email) {
-      console.log("user email", users[user].email);
+      // console.log("user email", users[user].email);
 
       return true;
     }
@@ -274,9 +272,9 @@ function checkUser(newEmail) {
 const validateUser = function (email, password) {
   //
   for (let user in users) {
-    console.log("in validate loop", users[user]);
+    // console.log("in validate loop", users[user]);
     if (users[user].email === email) {
-      console.log("yes");
+      // console.log("yes");
       if (users[user].password === password) {
         return users[user];
       }
