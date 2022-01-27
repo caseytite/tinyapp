@@ -165,19 +165,29 @@ app.post("/urls", (req, resp) => {
 // Deletes a URL----------------------------------------------------------
 //
 app.post("/urls/:shortURL/delete", (req, resp) => {
-  const shortURL = req.params.shortURL;
-  delete urlDatabase[shortURL];
-  resp.redirect("/urls");
+  const userLoggedIn = req.cookies.user_id;
+  if (userLoggedIn) {
+    const shortURL = req.params.shortURL;
+    delete urlDatabase[shortURL];
+    resp.redirect("/urls");
+  } else {
+    resp.send("unauthorized");
+  }
 });
 //
 //Does somthing--------
 //
 app.post("/urls/:shortURL", (req, resp) => {
-  const shortURL = req.params.shortURL;
+  const userLoggedIn = req.cookies.user_id;
+  if (userLoggedIn) {
+    const shortURL = req.params.shortURL;
 
-  urlDatabase[shortURL].longURL = req.body.longURL;
+    urlDatabase[shortURL].longURL = req.body.longURL;
 
-  resp.redirect("/urls");
+    resp.redirect("/urls");
+  } else {
+    resp.send("unauthorized");
+  }
 });
 
 //
