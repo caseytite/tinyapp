@@ -273,11 +273,9 @@ const validateUser = function (email, password) {
   //
   for (let user in users) {
     // console.log("in validate loop", users[user]);
-    if (users[user].email === email) {
+    if (users[user].email === email && users[user].password === password) {
       // console.log("yes");
-      if (users[user].password === password) {
-        return users[user];
-      }
+      return users[user];
     }
   }
   return false;
