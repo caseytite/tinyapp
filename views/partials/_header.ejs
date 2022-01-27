@@ -21,9 +21,10 @@
 
     <div>
       <% if(!username){ %>
-      <form action="/login" method="POST" class="form-inline">
+      <a href="/login" >Login</a>
+      <a href="/register">Register</a>
+      <!-- <form action="/login" method="POST" class="form-inline">
         <h5 class="text-light mt-1">Login</h5>
-        <a href="/register">Register</a>
         <input
           class="form-control ml-2"
           type="text"
@@ -31,7 +32,7 @@
           name="username"
           value=""
         />
-        <button type="submit" class="btn btn-dark ml-2">Sign in</button>
+        <button type="submit" class="btn btn-dark ml-2">Sign in</button> -->
       </form>
 
       <% } else { %>
