@@ -3,17 +3,17 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const { generateRandomString } = require("./functions");
+const { generateRandomString, checkUser } = require("./functions");
 
-// middleware------
+// middleware-------------------------------------------------------------
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set("view engine", "ejs");
 
-//---------------
+//------------------------------------------------------------------------
 
-// Data----------
+// Data-------------------------------------------------------------------
 
 const urlDatabase = {
   b6UTxQ: {
@@ -30,14 +30,14 @@ const users = {
   2: { id: 1, email: "ojt@123.com", password: "123" },
 };
 
-//---------------
+//------------------------------------------------------------------------
 
 //
-// Home page
+// Home page--------------------------------------------------------------
 //
 app.get("/", (req, resp) => {
-  const loggedIn = req.cookies.user_id;
-  if (loggedIn) {
+  const userLoggedIn = req.cookies.user_id;
+  if (userLoggedIn) {
     const templateVars = {
       urls: urlDatabase,
       user: users[req.cookies.user_id],
@@ -51,7 +51,7 @@ app.get("/", (req, resp) => {
   }
 });
 //
-// Test codes
+// Test codes-------------------------------------------------------------
 //
 app.get("/urls.json", (req, resp) => {
   resp.json(urlDatabase);
@@ -61,25 +61,17 @@ app.get("/hello", (req, resp) => {
 });
 
 //
-// my URLs page
+// my URLs page-----------------------------------------------------------
 //
 app.get("/urls", (req, resp) => {
-  const loggedIn = req.cookies.user_id;
+  const userLoggedIn = req.cookies.user_id;
 
-  if (loggedIn) {
-    const userUrls = {};
-    for (let urlId in urlDatabase) {
-      const url = urlDatabase[urlId];
-      if (url["userID"] === loggedIn) {
-        userUrls[urlId] = url.longURL;
-      }
-    }
-
+  if (userLoggedIn) {
+    const userUrls = urlsForUser(userLoggedIn, urlDatabase);
     const templateVars = {
       urls: userUrls,
       user: users[req.cookies.user_id],
     };
-
     resp.render("urls_index", templateVars);
   } else {
     resp.redirect("/login");
@@ -87,12 +79,12 @@ app.get("/urls", (req, resp) => {
 });
 
 //
-// Page for new URL
+// Page for new URL-------------------------------------------------------
 //
 app.get("/urls/new", (req, resp) => {
   // console.log(req.cookies.user_id);
-  const loggedIn = req.cookies.user_id;
-  if (loggedIn) {
+  const userLoggedIn = req.cookies.user_id;
+  if (userLoggedIn) {
     const templateVars = {
       urls: urlDatabase,
       user: users[req.cookies.user_id],
@@ -104,7 +96,7 @@ app.get("/urls/new", (req, resp) => {
   }
 });
 //
-//  Post to add new link
+//  Post to add new link--------------------------------------------------
 //
 app.post("/urls", (req, resp) => {
   const shortURL = generateRandomString();
@@ -117,7 +109,7 @@ app.post("/urls", (req, resp) => {
   resp.redirect(`/urls/${shortURL}`);
 });
 //
-// redirect when clicking on short url
+// redirect when clicking on short url------------------------------------
 //
 app.get("/u/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
@@ -126,11 +118,11 @@ app.get("/u/:shortURL", (req, resp) => {
   resp.redirect(longURL);
 });
 //
-// go to tiny url page
+// go to tiny url page----------------------------------------------------
 //
 app.get("/urls/:shortURL", (req, resp) => {
-  const loggedIn = req.cookies.user_id;
-  if (loggedIn) {
+  const userLoggedIn = req.cookies.user_id;
+  if (userLoggedIn) {
     const shortURL = req.params.shortURL;
     const templateVars = {
       shortURL,
@@ -145,7 +137,7 @@ app.get("/urls/:shortURL", (req, resp) => {
   }
 });
 //
-// Deletes a URL
+// Deletes a URL----------------------------------------------------------
 //
 app.post("/urls/:shortURL/delete", (req, resp) => {
   const shortURL = req.params.shortURL;
@@ -161,7 +153,7 @@ app.post("/urls/:shortURL", (req, resp) => {
   resp.redirect("/urls");
 });
 //
-// Logs in
+// Logs in----------------------------------------------------------------
 //
 app.get("/login", (req, resp) => {
   const templateVars = {
@@ -170,33 +162,25 @@ app.get("/login", (req, resp) => {
   resp.render("login_page", templateVars);
 });
 //
-// logs user in
+// logs user in-----------------------------------------------------------
 //
 app.post("/login", (req, resp) => {
   const email = req.body.email;
   console.log("email", email);
   const password = req.body.password;
-  // console.log(password);
 
   const user = validateUser(email, password);
   console.log("before if", user);
   if (user) {
     resp.cookie("user_id", user.id);
-    // console.log("if");
     resp.redirect("/urls");
   } else {
-    // console.log("else");
-    // resp.status(403);
-    // resp.send(401).status("Unable to find the associated user credentials.");
-    // next();
     resp.redirect("https://httpstatusdogs.com/img/404.jpg");
   }
 });
 
-// A user cannot log in with an incorrect email/password
-
 //
-// Logs out
+// Logs out---------------------------------------------------------------
 //
 app.post("/logout", (req, resp) => {
   //
@@ -207,7 +191,7 @@ app.post("/logout", (req, resp) => {
 });
 
 //
-// Register
+// Register---------------------------------------------------------------
 //
 app.get("/register", (req, resp) => {
   const templateVars = {
@@ -218,7 +202,7 @@ app.get("/register", (req, resp) => {
 });
 
 //
-// Register Form submit
+// Register Form submit---------------------------------------------------
 //
 app.post("/register", (req, resp) => {
   //
@@ -226,82 +210,62 @@ app.post("/register", (req, resp) => {
   const newEmail = req.body.email;
   const newPassword = req.body.password;
   if (newEmail === "" || newPassword === "") {
-    // resp.statusCode = 400;
     resp.redirect("https://httpstatusdogs.com/img/404.jpg");
     resp.end();
   } else if (checkUser(newEmail, users)) {
     //
-    // resp.statusCode = 400;
     resp.redirect("https://httpstatusdogs.com/img/404.jpg");
     resp.end();
-    // console.log("user exists");
   } else {
     users[newUID] = { id: newUID, email: newEmail, password: newPassword };
 
     resp.cookie("user_id", newUID);
 
-    // console.log(users);
     resp.redirect("/urls");
   }
 });
 //
-// wild card 404 error
+// wild card 404 error----------------------------------------------------
 //
 app.get("*", (req, resp) => {
   resp.redirect("https://httpstatusdogs.com/img/404.jpg");
 });
 
 //
-// Server listening
+// Server listening-------------------------------------------------------
 //
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
 
-function checkUser(newEmail, users) {
-  for (let user in users) {
-    if (newEmail == users[user].email) {
-      // console.log("user email", users[user].email);
-
-      return true;
-    }
-  }
-  return false;
-}
+// function checkUser(newEmail, users) {
+//   for (let user in users) {
+//     if (newEmail == users[user].email) {
+//       return true;
+//     }
+//   }
+//   return false;
+// }
 
 const validateUser = function (email, password) {
   //
   for (let user in users) {
-    // console.log("in validate loop", users[user]);
     if (users[user].email === email && users[user].password === password) {
-      // console.log("yes");
       return users[user];
     }
   }
   return false;
 };
 
-const urlsForUser = function (id) {
-  //
+const urlsForUser = function (userLoggedIn, urlDatabase) {
   const userUrls = {};
-  for (let url in urlDatabase) {
-    const userUrl = urlDatabase[url];
-    console.log(urlDatabase[url].userID);
-    if (userUrl.userID !== id.toString()) {
-      continue;
-    } else {
-      if (url in userUrls) {
-        continue;
-      } else {
-        userUrls[url] = {
-          shortURL: url,
-          longURL: userUrl.longURL,
-          userID: userUrl.userID,
-        };
-      }
+  for (let urlId in urlDatabase) {
+    const url = urlDatabase[urlId];
+    if (url["userID"] === userLoggedIn) {
+      userUrls[urlId] = url.longURL;
     }
   }
-  // console.log(userUrls);
-
   return userUrls;
 };
+
+// console.log(urlsForUser(1));

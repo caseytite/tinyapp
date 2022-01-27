@@ -9,7 +9,16 @@ function generateRandomString() {
 
   return output;
 }
+function checkUser(newEmail, users) {
+  for (let user in users) {
+    if (newEmail == users[user].email) {
+      return true;
+    }
+  }
+  return false;
+}
 
 module.exports = {
   generateRandomString,
+  checkUser,
 };
