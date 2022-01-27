@@ -30,16 +30,9 @@ const users = {
 // Home page
 //
 app.get("/", (req, resp) => {
-  // resp.send("Hello!, Is there anybody out there?");
-  // const templateVars = {
-  //   urls: urlDatabase,
-  //   user_id: req.cookies.user_id,
-  //   users: users,
-  // };
   const templateVars = {
     urls: urlDatabase,
     user: users[req.cookies.user_id],
-    // users: users,----
   };
   resp.render("home_page", templateVars);
 });
@@ -62,9 +55,7 @@ app.get("/urls", (req, resp) => {
     const templateVars = {
       urls: urlDatabase,
       user: users[req.cookies.user_id],
-      // users: users,----
     };
-    // console.log("in app.get urls", req.cookies.user_id);
     resp.render("urls_index", templateVars);
   } else {
     resp.redirect("/login");
@@ -81,13 +72,8 @@ app.get("/urls/new", (req, resp) => {
     const templateVars = {
       urls: urlDatabase,
       user: users[req.cookies.user_id],
-      // users: users,----
     };
-    // const templateVars = {
-    //   urls: urlDatabase,
-    //   user_id: req.cookies.user_id,
-    //   users: users,
-    // };
+
     resp.render("urls_new", templateVars);
   } else {
     resp.redirect("/login");
@@ -119,14 +105,7 @@ app.get("/u/:shortURL", (req, resp) => {
 app.get("/urls/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
-  // console.log("shortURL", shortURL);
-  // console.log("longURL", longURL);
-  // const templateVars = {
-  //   shortURL,
-  //   longURL,
-  //   user_id: req.cookies.user_id,
-  //   users: users,
-  // };
+
   const templateVars = {
     shortURL,
     longURL,
@@ -162,7 +141,6 @@ app.post("/urls/:shortURL", (req, resp) => {
 //
 app.get("/login", (req, resp) => {
   const templateVars = {
-    // user_id: req.cookies.user_id,
     user: null,
   };
   resp.render("login_page", templateVars);
@@ -207,14 +185,8 @@ app.post("/logout", (req, resp) => {
 // Register
 //
 app.get("/register", (req, resp) => {
-  // const shortURL = req.params.shortURL;
-  // const longURL = urlDatabase[shortURL];
   const templateVars = {
-    // shortURL,
-    // longURL,
-    // user_id: req.cookies.user_id,
     user: null,
-    // users: users,
   };
 
   resp.render("register_page", templateVars);
