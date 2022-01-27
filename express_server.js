@@ -3,7 +3,12 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const { generateRandomString, checkUser } = require("./functions");
+const {
+  generateRandomString,
+  checkUser,
+  validateUser,
+  urlsForUser,
+} = require("./functions");
 
 // middleware-------------------------------------------------------------
 
@@ -169,7 +174,7 @@ app.post("/login", (req, resp) => {
   console.log("email", email);
   const password = req.body.password;
 
-  const user = validateUser(email, password);
+  const user = validateUser(email, password, users);
   console.log("before if", user);
   if (user) {
     resp.cookie("user_id", user.id);
@@ -237,35 +242,3 @@ app.get("*", (req, resp) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
-
-// function checkUser(newEmail, users) {
-//   for (let user in users) {
-//     if (newEmail == users[user].email) {
-//       return true;
-//     }
-//   }
-//   return false;
-// }
-
-const validateUser = function (email, password) {
-  //
-  for (let user in users) {
-    if (users[user].email === email && users[user].password === password) {
-      return users[user];
-    }
-  }
-  return false;
-};
-
-const urlsForUser = function (userLoggedIn, urlDatabase) {
-  const userUrls = {};
-  for (let urlId in urlDatabase) {
-    const url = urlDatabase[urlId];
-    if (url["userID"] === userLoggedIn) {
-      userUrls[urlId] = url.longURL;
-    }
-  }
-  return userUrls;
-};
-
-// console.log(urlsForUser(1));

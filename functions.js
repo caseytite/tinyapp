@@ -18,7 +18,29 @@ function checkUser(newEmail, users) {
   return false;
 }
 
+const validateUser = function (email, password, users) {
+  //
+  for (let user in users) {
+    if (users[user].email === email && users[user].password === password) {
+      return users[user];
+    }
+  }
+  return false;
+};
+const urlsForUser = function (userLoggedIn, urlDatabase) {
+  const userUrls = {};
+  for (let urlId in urlDatabase) {
+    const url = urlDatabase[urlId];
+    if (url["userID"] === userLoggedIn) {
+      userUrls[urlId] = url.longURL;
+    }
+  }
+  return userUrls;
+};
+
 module.exports = {
   generateRandomString,
   checkUser,
+  validateUser,
+  urlsForUser,
 };
