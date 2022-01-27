@@ -16,8 +16,14 @@ app.set("view engine", "ejs");
 // Data----------
 
 const urlDatabase = {
-  b2xVn2: "http://www.lighthouselabs.ca",
-  "9sm5xk": "http://www.google.com",
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "1",
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "2",
+  },
 };
 const users = {
   1: { id: 1, email: "cjt@123.com", password: "123" },
@@ -51,11 +57,26 @@ app.get("/hello", (req, resp) => {
 //
 app.get("/urls", (req, resp) => {
   const loggedIn = req.cookies.user_id;
+
   if (loggedIn) {
+    const userUrls = {};
+    // loop each url
+    for (let urlId in urlDatabase) {
+      const url = urlDatabase[urlId];
+      // check if id matches current id
+      // console.log("url", url);
+      if (url["userID"] === loggedIn) {
+        //display matching urls
+        userUrls[urlId] = url.longURL;
+      }
+    }
+    // console.log(userUrls);
+
     const templateVars = {
-      urls: urlDatabase,
+      urls: userUrls,
       user: users[req.cookies.user_id],
     };
+
     resp.render("urls_index", templateVars);
   } else {
     resp.redirect("/login");
@@ -85,11 +106,13 @@ app.get("/urls/new", (req, resp) => {
 app.post("/urls", (req, resp) => {
   const shortURL = generateRandomString();
   const longURL = req.body.longURL;
-  urlDatabase[shortURL] = longURL;
-  //make sure this does not have the colon or it wont work
-  // console.log("we came through here");
+  const userID = req.cookies.user_id;
+
+  urlDatabase[shortURL] = { longURL: longURL, userID: userID };
+  console.log(req.cookies.user_id);
+  // urlDatabase[shortURL] = longURL;
+
   resp.redirect(`/urls/${shortURL}`);
-  // console.log(urlDatabase);
 });
 //
 // redirect when clicking on short url
@@ -97,6 +120,7 @@ app.post("/urls", (req, resp) => {
 app.get("/u/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
+
   resp.redirect(longURL);
 });
 //
@@ -104,11 +128,10 @@ app.get("/u/:shortURL", (req, resp) => {
 //
 app.get("/urls/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL];
-
+  // const longURL = urlDatabase[shortURL]; DN
   const templateVars = {
     shortURL,
-    longURL,
+    longURL: urlDatabase[shortURL].longURL,
     urls: urlDatabase,
     user: users[req.cookies.user_id],
     // users: users,----
@@ -119,20 +142,15 @@ app.get("/urls/:shortURL", (req, resp) => {
 // Deletes a URL
 //
 app.post("/urls/:shortURL/delete", (req, resp) => {
-  //pull short url from params
   const shortURL = req.params.shortURL;
-  //delete short url
   delete urlDatabase[shortURL];
   resp.redirect("/urls");
 });
-//longurl becomes the key because we assigned the input name to longurl ,short url the new value from resp body
 app.post("/urls/:shortURL", (req, resp) => {
-  //short url is still the same
   const shortURL = req.params.shortURL;
-  //we search for the key and assign to the new value
-  // of longURL which comes from the input name === key
-  //the input value will be the "text content"
-  urlDatabase[shortURL] = req.body.longURL;
+
+  console.log("this page");
+  urlDatabase[shortURL].longURL = req.body.longURL;
 
   resp.redirect("/urls");
 });
