@@ -20,7 +20,7 @@
     </div>
 
     <div>
-      <% if(!user_id){ %>
+      <% if(!user){ %>
       <a href="/login">Login</a>
       <a href="/register">Register</a>
       <!-- <form action="/login" method="POST" class="form-inline">
@@ -39,7 +39,7 @@
 
       <form action="/logout" method="POST" class="form-inline">
         <h5 class="text-light mt-1">
-          Logged in as: <%=users[user_id].email%>
+          Logged in as: <%=user.email%>
         </h5>
         <span class="text-light"></span>
         <button type="submit" name="username" class="btn btn-dark ml-2">
