@@ -3,6 +3,8 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const { generateRandomString } = require("./functions");
+
 // middleware------
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,12 +22,12 @@ const urlDatabase = {
   },
   i3BoGr: {
     longURL: "https://www.google.ca",
-    userID: "2",
+    userID: "1",
   },
 };
 const users = {
   1: { id: 1, email: "cjt@123.com", password: "123" },
-  2: { id: 2, email: "ojt@123.com", password: "123" },
+  2: { id: 1, email: "ojt@123.com", password: "123" },
 };
 
 //---------------
@@ -227,7 +229,7 @@ app.post("/register", (req, resp) => {
     // resp.statusCode = 400;
     resp.redirect("https://httpstatusdogs.com/img/404.jpg");
     resp.end();
-  } else if (checkUser(newEmail)) {
+  } else if (checkUser(newEmail, users)) {
     //
     // resp.statusCode = 400;
     resp.redirect("https://httpstatusdogs.com/img/404.jpg");
@@ -256,9 +258,7 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
 
-const { generateRandomString } = require("./functions");
-
-function checkUser(newEmail) {
+function checkUser(newEmail, users) {
   for (let user in users) {
     if (newEmail == users[user].email) {
       // console.log("user email", users[user].email);
@@ -281,4 +281,29 @@ const validateUser = function (email, password) {
     }
   }
   return false;
+};
+
+const urlsForUser = function (id) {
+  //
+  const userUrls = {};
+  for (let url in urlDatabase) {
+    const userUrl = urlDatabase[url];
+    console.log(urlDatabase[url].userID);
+    if (userUrl.userID !== id.toString()) {
+      continue;
+    } else {
+      if (url in userUrls) {
+        continue;
+      } else {
+        userUrls[url] = {
+          shortURL: url,
+          longURL: userUrl.longURL,
+          userID: userUrl.userID,
+        };
+      }
+    }
+  }
+  // console.log(userUrls);
+
+  return userUrls;
 };
