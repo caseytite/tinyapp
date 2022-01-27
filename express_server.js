@@ -101,20 +101,7 @@ app.get("/urls/new", (req, resp) => {
   }
 });
 //
-//  Post to add new link--------------------------------------------------
-//
-app.post("/urls", (req, resp) => {
-  const shortURL = generateRandomString();
-  const longURL = req.body.longURL;
-  const userID = req.cookies.user_id;
-
-  urlDatabase[shortURL] = { longURL: longURL, userID: userID };
-  console.log(req.cookies.user_id);
-
-  resp.redirect(`/urls/${shortURL}`);
-});
-//
-// redirect when clicking on short url------------------------------------
+// go to short url--------------------------------------------------------
 //
 app.get("/u/:shortURL", (req, resp) => {
   const shortURL = req.params.shortURL;
@@ -142,22 +129,6 @@ app.get("/urls/:shortURL", (req, resp) => {
   }
 });
 //
-// Deletes a URL----------------------------------------------------------
-//
-app.post("/urls/:shortURL/delete", (req, resp) => {
-  const shortURL = req.params.shortURL;
-  delete urlDatabase[shortURL];
-  resp.redirect("/urls");
-});
-app.post("/urls/:shortURL", (req, resp) => {
-  const shortURL = req.params.shortURL;
-
-  console.log("this page");
-  urlDatabase[shortURL].longURL = req.body.longURL;
-
-  resp.redirect("/urls");
-});
-//
 // Logs in----------------------------------------------------------------
 //
 app.get("/login", (req, resp) => {
@@ -167,15 +138,56 @@ app.get("/login", (req, resp) => {
   resp.render("login_page", templateVars);
 });
 //
+// Register---------------------------------------------------------------
+//
+app.get("/register", (req, resp) => {
+  const templateVars = {
+    user: null,
+  };
+
+  resp.render("register_page", templateVars);
+});
+//
+//  Post to add new link--------------------------------------------------
+//
+app.post("/urls", (req, resp) => {
+  const shortURL = generateRandomString();
+  const longURL = req.body.longURL;
+  const userID = req.cookies.user_id;
+
+  urlDatabase[shortURL] = { longURL: longURL, userID: userID };
+
+  resp.redirect(`/urls/${shortURL}`);
+});
+//
+
+//
+// Deletes a URL----------------------------------------------------------
+//
+app.post("/urls/:shortURL/delete", (req, resp) => {
+  const shortURL = req.params.shortURL;
+  delete urlDatabase[shortURL];
+  resp.redirect("/urls");
+});
+//
+//Does somthing--------
+//
+app.post("/urls/:shortURL", (req, resp) => {
+  const shortURL = req.params.shortURL;
+
+  urlDatabase[shortURL].longURL = req.body.longURL;
+
+  resp.redirect("/urls");
+});
+
+//
 // logs user in-----------------------------------------------------------
 //
 app.post("/login", (req, resp) => {
   const email = req.body.email;
-  console.log("email", email);
   const password = req.body.password;
 
   const user = validateUser(email, password, users);
-  console.log("before if", user);
   if (user) {
     resp.cookie("user_id", user.id);
     resp.redirect("/urls");
@@ -193,17 +205,6 @@ app.post("/logout", (req, resp) => {
   resp.clearCookie("user_id", user_id);
   // resp.redirect("/");
   resp.redirect("/urls");
-});
-
-//
-// Register---------------------------------------------------------------
-//
-app.get("/register", (req, resp) => {
-  const templateVars = {
-    user: null,
-  };
-
-  resp.render("register_page", templateVars);
 });
 
 //
