@@ -126,18 +126,24 @@ app.get('/u/:shortURL', (req, resp) => {
 //
 app.get('/urls/:shortURL', (req, resp) => {
   const userLoggedIn = req.session.user_id;
+
   if (userLoggedIn) {
     const shortURL = req.params.shortURL;
+
     const templateVars = {
       shortURL,
       longURL: urlDatabase[shortURL].longURL,
       urls: urlDatabase,
       user: users[userLoggedIn.id],
     };
+
     resp.render('urls_show', templateVars);
   } else {
     resp.redirect('/login');
   }
+  // if (resp.body === undefined) {
+  //   resp.redirect('https://httpstatusdogs.com/img/404.jpg');
+  // }
 });
 //
 // Logs in----------------------------------------------------------------
