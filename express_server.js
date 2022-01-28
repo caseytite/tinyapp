@@ -186,7 +186,7 @@ app.post('/urls/:shortURL/delete', (req, resp) => {
     delete urlDatabase[shortURL];
     resp.redirect('/urls');
   } else {
-    resp.send('unauthorized');
+    resp.redirect('https://httpstatusdogs.com/img/403.jpg');
   }
 });
 //
@@ -202,7 +202,7 @@ app.post('/urls/:shortURL', (req, resp) => {
 
     resp.redirect('/urls');
   } else {
-    resp.send('unauthorized');
+    resp.redirect('https://httpstatusdogs.com/img/403.jpg');
   }
 });
 
@@ -242,11 +242,11 @@ app.post('/register', (req, resp) => {
   const newEmail = req.body.email;
   const newPassword = req.body.password;
   if (newEmail === '' || newPassword === '') {
-    resp.redirect('https://httpstatusdogs.com/img/404.jpg');
+    resp.redirect('https://httpstatusdogs.com/img/406.jpg');
     resp.end();
   } else if (getUserByEmail(newEmail, users)) {
     //
-    resp.redirect('https://httpstatusdogs.com/img/404.jpg');
+    resp.redirect('https://httpstatusdogs.com/img/406.jpg');
     resp.end();
   } else {
     const hashedPassword = bcrypt.hashSync(newPassword, 10);
