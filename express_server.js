@@ -190,7 +190,7 @@ app.post('/urls/:shortURL/delete', (req, resp) => {
   }
 });
 //
-// gots to short url page
+// goes to short url page-------------------------------------------------
 //
 app.post('/urls/:shortURL', (req, resp) => {
   const userLoggedIn = req.session.user_id.id;
