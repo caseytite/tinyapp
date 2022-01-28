@@ -25,10 +25,6 @@ app.use(
 
 //------------------------------------------------------------------------
 
-// const password123 = "isthereanybodyoutthere";
-// const hashed = bcrypt.hashSync(password123, 10);
-// console.log("hashed password = ", hashed);
-// console.log(bcrypt.compareSync("isthereanybodyoutthere", hashed));
 // Data-------------------------------------------------------------------
 
 const urlDatabase = {
@@ -49,7 +45,7 @@ const users = {
 //------------------------------------------------------------------------
 
 //
-// Home page--------------------------------------------------------------here
+// Home page--------------------------------------------------------------
 //
 app.get('/', (req, resp) => {
   const userLoggedIn = req.session.user_id;
@@ -115,8 +111,11 @@ app.get('/urls/new', (req, resp) => {
 //
 app.get('/u/:shortURL', (req, resp) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL].longURL;
+  if (!urlDatabase[shortURL]) {
+    resp.redirect('https://httpstatusdogs.com/img/404.jpg');
+  }
 
+  const longURL = urlDatabase[shortURL].longURL;
   resp.redirect(longURL);
 });
 //
@@ -127,6 +126,9 @@ app.get('/urls/:shortURL', (req, resp) => {
 
   if (userLoggedIn) {
     const shortURL = req.params.shortURL;
+    if (!urlDatabase[shortURL]) {
+      resp.redirect('https://httpstatusdogs.com/img/404.jpg');
+    }
 
     const templateVars = {
       shortURL,
@@ -139,12 +141,9 @@ app.get('/urls/:shortURL', (req, resp) => {
   } else {
     resp.redirect('/login');
   }
-  // if (resp.body === undefined) {
-  //   resp.redirect('https://httpstatusdogs.com/img/404.jpg');
-  // }
 });
 //
-// Logs in----------------------------------------------------------------
+// Gets login page in-----------------------------------------------------
 //
 app.get('/login', (req, resp) => {
   const templateVars = {

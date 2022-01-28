@@ -27,6 +27,7 @@ const validateUser = function (email, hashed, password, users) {
   }
   return false;
 };
+
 const urlsForUser = function (userLoggedIn, urlDatabase) {
   const userUrls = {};
   for (let urlId in urlDatabase) {
