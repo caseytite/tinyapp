@@ -1,8 +1,8 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 
 function generateRandomString() {
-  let output = "";
-  let randoms = "123456789abcdefghi";
+  let output = '';
+  let randoms = '123456789abcdefghi';
   for (let i = 0; i < 6; i++) {
     output += randoms[Math.floor(Math.random() * 18)];
   }
@@ -25,14 +25,13 @@ const validateUser = function (email, hashed, password, users) {
       return users[user];
     }
   }
-  console.log("fail");
   return false;
 };
 const urlsForUser = function (userLoggedIn, urlDatabase) {
   const userUrls = {};
   for (let urlId in urlDatabase) {
     const url = urlDatabase[urlId];
-    if (url["userID"] === userLoggedIn) {
+    if (url['userID'] === userLoggedIn) {
       userUrls[urlId] = url.longURL;
     }
   }
