@@ -6,7 +6,9 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 !["Screenshot of the Login page"](https://github.com/caseytite/tinyapp/blob/main/docs/Screen%20Shot%202022-01-27%20at%205.38.04%20PM.png?raw=true)
 
-!["Screenshot of the Users custom urls"](https://github.com/caseytite/tinyapp/blob/main/docs/Screen%20Shot%202022-01-27%20at%205.38.56%20PM.png?raw=true)
+!["Screenshot of URL edit page"](https://github.com/caseytite/tinyapp/blob/main/docs/Screen%20Shot%202022-01-27%20at%207.14.16%20PM.png?raw=true)
+
+!["Screenshot of the Users custom URL's"](https://github.com/caseytite/tinyapp/blob/main/docs/Screen%20Shot%202022-01-27%20at%205.38.56%20PM.png?raw=true)
 
 ## Dependencies
 
