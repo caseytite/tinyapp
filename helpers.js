@@ -9,13 +9,13 @@ function generateRandomString() {
 
   return output;
 }
-function checkUser(newEmail, users) {
+function getUserByEmail(newEmail, users) {
   for (let user in users) {
     if (newEmail == users[user].email) {
-      return true;
+      return { id: users[user].id, email: users[user].email };
     }
   }
-  return false;
+  return undefined;
 }
 
 const validateUser = function (email, hashed, password, users) {
@@ -41,7 +41,7 @@ const urlsForUser = function (userLoggedIn, urlDatabase) {
 
 module.exports = {
   generateRandomString,
-  checkUser,
+  getUserByEmail,
   validateUser,
   urlsForUser,
 };

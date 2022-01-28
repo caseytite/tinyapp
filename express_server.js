@@ -8,10 +8,10 @@ const cookieSession = require("cookie-session");
 
 const {
   generateRandomString,
-  checkUser,
+  getUserByEmail,
   validateUser,
   urlsForUser,
-} = require("./functions");
+} = require("./helpers");
 
 // middleware-------------------------------------------------------------
 
@@ -278,7 +278,7 @@ app.post("/register", (req, resp) => {
   if (newEmail === "" || newPassword === "") {
     resp.redirect("https://httpstatusdogs.com/img/404.jpg");
     resp.end();
-  } else if (checkUser(newEmail, users)) {
+  } else if (getUserByEmail(newEmail, users)) {
     //
     resp.redirect("https://httpstatusdogs.com/img/404.jpg");
     resp.end();
