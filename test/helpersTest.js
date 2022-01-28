@@ -1,4 +1,5 @@
 const { assert } = require("chai");
+const bcrypt = require("bcryptjs");
 
 const { getUserByEmail } = require("../helpers.js");
 
@@ -21,8 +22,13 @@ const testUsers = {
 
 describe("getUserByEmail", function () {
   it("should return a user with valid email", function () {
-    const user = getUserByEmail("user@example.com", testUsers);
-    const expectedUserID = "userRandomID";
-    // Write your assert statement here
+    const user = getUserByEmail("cjt@123.com", testUsers);
+    const expectedUserID = "1";
+    assert.deepEqual(user, { id: expectedUserID, email: "cjt@123.com" });
+  });
+  it("should return undefined if a user does not exists", function () {
+    const user = getUserByEmail("cjt1@123.com", testUsers);
+    const expectedUserID = "1";
+    assert.equal(user, undefined);
   });
 });
