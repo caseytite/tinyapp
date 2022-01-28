@@ -111,6 +111,7 @@ app.get('/urls/new', (req, resp) => {
 //
 app.get('/u/:shortURL', (req, resp) => {
   const shortURL = req.params.shortURL;
+
   if (!urlDatabase[shortURL]) {
     resp.redirect('https://httpstatusdogs.com/img/404.jpg');
   }
@@ -119,7 +120,7 @@ app.get('/u/:shortURL', (req, resp) => {
   resp.redirect(longURL);
 });
 //
-//-----gots to url page when logged in------------------------------------
+//-----goes to url page when logged in------------------------------------
 //
 app.get('/urls/:shortURL', (req, resp) => {
   const userLoggedIn = req.session.user_id;
